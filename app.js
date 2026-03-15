@@ -161,12 +161,25 @@ el.authClose.addEventListener("click", closeAuth);
 async function handleLogin(isSignup = false) {
   const email = el.authEmail.value.trim();
   const password = el.authPassword.value.trim();
-  if (!email || !password) return (el.authMessage.textContent = "Điền email/mật khẩu");
-  el.authMessage.textContent = isSignup ? "Đang đăng ký..." : "Đang đăng nhập...";
-  const fn = isSignup ? sb.auth.signUp : sb.auth.signInWithPassword;
-  const { error } = await fn({ email, password });
-  if (error) { el.authMessage.textContent = error.message; return; }
-  el.authMessage.textContent = "Thành công. Kiểm tra email nếu cần xác thực.";
+
+  if (!email || !password) {
+    el.authMessage.textContent = "Nhập email và mật khẩu";
+    return;
+  }
+
+  try {
+    if (isSignup) {
+      const { data, error } = await sb.auth.signUp({ email: email, password: password });
+      if (error) { el.authMessage.textContent = error.message; return; }
+      el.authMessage.textContent = "Đăng ký thành công";
+    } else {
+      const { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
+      if (error) { el.authMessage.textContent = error.message; return; }
+      el.authMessage.textContent = "Đăng nhập thành công";
+    }
+  } catch (err) {
+    el.authMessage.textContent = err.message;
+  }
 }
 
 el.doLogin.addEventListener("click", () => handleLogin(false));
