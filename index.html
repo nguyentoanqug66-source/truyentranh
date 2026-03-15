@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetTruyen Supa</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">Net<span>Supa</span></div>
+    <div class="search-box">
+      <input id="searchInput" type="text" placeholder="Tìm truyện..." />
+      <button id="searchBtn">Tìm</button>
+    </div>
+    <div class="filters">
+      <select id="genreSelect"></select>
+      <select id="statusSelect">
+        <option value="all">Tất cả</option>
+        <option value="ongoing">Đang ra</option>
+        <option value="completed">Đã hoàn thành</option>
+      </select>
+    </div>
+    <div class="auth-box">
+      <div id="userInfo" class="hidden"></div>
+      <button id="loginBtn">Đăng nhập</button>
+      <button id="logoutBtn" class="hidden">Đăng xuất</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="notice">
+      <div>Backend: Supabase (Auth + DB). Điền SUPABASE_URL và ANON_KEY trong <code>config.js</code>.</div>
+    </section>
+    <div id="grid" class="grid"></div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="modalClose" class="close">×</button>
+      <div class="modal-body">
+        <img id="modalCover" alt="Bìa truyện" />
+        <div class="info">
+          <h2 id="modalTitle"></h2>
+          <p id="modalMeta"></p>
+          <p id="modalDesc"></p>
+          <div id="modalGenres" class="chips"></div>
+          <div class="meta-line">Tác giả: <span id="modalAuthor"></span></div>
+          <div class="meta-line">Trạng thái: <span id="modalStatus"></span></div>
+          <div class="actions">
+            <button id="bookmarkBtn">Bookmark</button>
+          </div>
+          <p id="modalBookmarkInfo" class="muted"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="authModal" class="modal hidden">
+    <div class="modal-content auth">
+      <button id="authClose" class="close">×</button>
+      <h2>Đăng nhập / Đăng ký</h2>
+      <input id="authEmail" type="email" placeholder="Email" />
+      <input id="authPassword" type="password" placeholder="Mật khẩu" />
+      <div class="auth-actions">
+        <button id="doLogin">Đăng nhập</button>
+        <button id="doSignup">Đăng ký</button>
+      </div>
+      <p id="authMessage" class="muted"></p>
+    </div>
+  </div>
+
+  <template id="cardTemplate">
+    <div class="card">
+      <div class="thumb">
+        <img class="cover" alt="Bìa" />
+        <div class="badge"></div>
+      </div>
+      <div class="card-body">
+        <h3 class="title"></h3>
+        <div class="meta">
+          <span class="chapters"></span>
+          <span class="views"></span>
+          <span class="updated"></span>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Polyfill Promise + fetch + AbortController cho môi trường thiếu -->
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/abortcontroller-polyfill@1.7.5/dist/umd-polyfill.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.6.20/dist/fetch.umd.js"></script>
+  <script>
+    if (typeof globalThis === 'undefined') { window.globalThis = window; }
+    if (!globalThis.fetch && typeof fetch !== 'undefined') globalThis.fetch = fetch;
+    if (!window.fetch && globalThis.fetch) window.fetch = globalThis.fetch;
+  </script>
+  <!-- Dùng bản UMD của supabase-js để tránh phụ thuộc ESM fetch -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
